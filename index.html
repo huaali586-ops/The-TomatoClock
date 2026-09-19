@@ -164,12 +164,35 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
 
 @media (max-width:640px){
   main{padding:18px 14px 48px}
-  .header-inner{padding:12px 14px;gap:10px}
+  .header-inner{padding:10px 12px;gap:8px}
+  .brand-sub{display:none}
+  .brand-name{font-size:14.5px}
+  .brand-mark{width:30px;height:30px}
+  nav{gap:4px}
+  .nav-btn{padding:6px 11px;font-size:13px}
+  .nav-btn svg{width:13px;height:13px}
+  #btn-login{padding:6px 11px;font-size:13px}
+  #btn-login svg{width:13px;height:13px}
+  .icon-btn{width:32px;height:32px}
+  .icon-btn svg{width:14px;height:14px}
   .timer-time{font-size:44px}
   .ring-wrap{width:230px;height:230px}
   .tiles{grid-template-columns:1fr 1fr}
   .tiles .tile:last-child{grid-column:1 / -1}
   .btn{padding:9px 14px;font-size:13.5px}
+  .section-title{font-size:19px}
+  .task-chip{padding:6px 11px;font-size:13px}
+  .preset{padding:5px 11px;font-size:12.5px}
+  .history-item{padding:10px 12px}
+}
+@media (max-width:380px){
+  .header-inner{gap:6px}
+  .nav-btn span, .nav-btn{font-size:0}
+  .nav-btn svg{width:15px;height:15px}
+  #btn-login span{display:none}
+  #btn-login{padding:6px 9px}
+  .timer-time{font-size:38px}
+  .ring-wrap{width:200px;height:200px}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
@@ -225,7 +248,7 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
       <span id="sync-status"></span>
       <button class="nav-btn" id="btn-login">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
-        GitHub 登录
+        <span>GitHub 登录</span>
       </button>
       <div id="auth-user">
         <img id="auth-avatar" width="28" height="28" alt="">
@@ -1046,7 +1069,11 @@ async function fullSync(){
     state.tombstones = {tasks:[], sessions:[]};
 
     saveNow();
-    renderChips(); renderTaskList(); renderRecords();
+    const active = document.querySelector('.view.active');
+    const viewName = active ? active.id.replace('view-','') : 'timer';
+    if(viewName === 'timer'){ renderChips(); }
+    else if(viewName === 'tasks'){ renderTaskList(); }
+    else if(viewName === 'records'){ renderRecords(); }
     if(timer && timer.kind === 'focus') refreshTimerTasks();
     const d = new Date();
     const hm = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
