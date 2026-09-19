@@ -300,6 +300,8 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
         <button class="preset active" data-min="25">25 分钟</button>
         <button class="preset" data-min="45">45 分钟</button>
         <button class="preset" data-min="60">60 分钟</button>
+        <button class="preset" id="btn-custom">自定义</button>
+        <input type="number" id="custom-min" min="1" max="999" placeholder="分钟" style="display:none;width:80px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:13px;background:var(--card);color:var(--ink);text-align:center">
       </div>
 
       <div class="ring-wrap">
@@ -790,15 +792,42 @@ document.querySelectorAll('#mode-seg button').forEach(b => b.addEventListener('c
   document.getElementById('finish-bar').classList.remove('show');
   saveNow(); renderTimer();
 }));
-document.querySelectorAll('.preset').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('.preset[data-min]').forEach(b => b.addEventListener('click', () => {
   if(timer.running) return;
   const min = parseInt(b.dataset.min, 10);
   state.settings.presetMin = min;
   document.querySelectorAll('.preset').forEach(x => x.classList.toggle('active', x === b));
+  document.getElementById('custom-min').style.display = 'none';
   clearInterval(tickHandle);
   timer = newTimer('down');
   saveNow(); renderTimer();
 }));
+document.getElementById('btn-custom').addEventListener('click', () => {
+  if(timer.running) return;
+  const inp = document.getElementById('custom-min');
+  if(inp.style.display === 'none' || !inp.style.display){
+    inp.style.display = 'inline-block';
+    inp.focus();
+    document.querySelectorAll('.preset').forEach(x => x.classList.remove('active'));
+  } else {
+    inp.style.display = 'none';
+  }
+});
+document.getElementById('custom-min').addEventListener('change', () => {
+  const inp = document.getElementById('custom-min');
+  const v = parseInt(inp.value, 10);
+  if(v >= 1 && v <= 999){
+    state.settings.presetMin = v;
+    document.querySelectorAll('.preset').forEach(x => x.classList.remove('active'));
+    document.getElementById('btn-custom').classList.add('active');
+    clearInterval(tickHandle);
+    timer = newTimer('down');
+    saveNow(); renderTimer();
+  }
+});
+document.getElementById('custom-min').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ e.preventDefault(); e.target.blur(); }
+});
 
 /* 空格键开始/暂停 */
 document.addEventListener('keydown', e => {
@@ -1188,7 +1217,15 @@ saveNow = function(){
 
 applyTheme();
 document.querySelectorAll('#mode-seg button').forEach(x => x.classList.toggle('active', x.dataset.mode === (state.settings.mode || 'down')));
-document.querySelectorAll('.preset').forEach(x => x.classList.toggle('active', parseInt(x.dataset.min,10) === (state.settings.presetMin || 25)));
+const _pm = state.settings.presetMin || 25;
+const _presetNums = [5,15,25,45,60];
+document.querySelectorAll('.preset[data-min]').forEach(x => x.classList.toggle('active', parseInt(x.dataset.min,10) === _pm));
+if(!_presetNums.includes(_pm)){
+  document.getElementById('btn-custom').classList.add('active');
+  const _ci = document.getElementById('custom-min');
+  _ci.value = _pm;
+  _ci.style.display = 'inline-block';
+}
 renderChips();
 renderTaskList();
 recover();
