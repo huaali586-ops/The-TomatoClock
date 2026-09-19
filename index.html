@@ -175,8 +175,9 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
   #btn-login svg{width:13px;height:13px}
   .icon-btn{width:32px;height:32px}
   .icon-btn svg{width:14px;height:14px}
-  .timer-time{font-size:44px}
-  .ring-wrap{width:230px;height:230px}
+  .timer-time{font-size:40px}
+  .ring-wrap{width:200px;height:200px}
+  .ring-bg,.ring-fg{stroke-width:9}
   .tiles{grid-template-columns:1fr 1fr}
   .tiles .tile:last-child{grid-column:1 / -1}
   .btn{padding:9px 14px;font-size:13.5px}
@@ -184,15 +185,18 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
   .task-chip{padding:6px 11px;font-size:13px}
   .preset{padding:5px 11px;font-size:12.5px}
   .history-item{padding:10px 12px}
+  .timer-layout{gap:14px}
+  .timer-actions{gap:8px}
 }
 @media (max-width:380px){
   .header-inner{gap:6px}
-  .nav-btn span, .nav-btn{font-size:0}
+  .nav-btn{font-size:0;padding:6px 9px}
   .nav-btn svg{width:15px;height:15px}
   #btn-login span{display:none}
   #btn-login{padding:6px 9px}
-  .timer-time{font-size:38px}
-  .ring-wrap{width:200px;height:200px}
+  .timer-time{font-size:34px}
+  .ring-wrap{width:175px;height:175px}
+  .ring-bg,.ring-fg{stroke-width:8}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
