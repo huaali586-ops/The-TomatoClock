@@ -121,6 +121,36 @@ main{max-width:1000px;margin:0 auto;padding:28px 20px 64px}
 .finish-bar.show{display:flex}
 .finish-bar b{color:var(--accent-deep)}
 
+/* ===== 倒数日页 ===== */
+.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.cd-card{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;aspect-ratio:16/10;border:1px solid var(--line);background:var(--card);transition:transform .15s,box-shadow .15s}
+.cd-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.cd-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35}
+.cd-card-body{position:relative;z-index:1;padding:18px;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.cd-card-title{font-size:17px;font-weight:700;color:var(--ink)}
+.cd-card-days{font-size:36px;font-weight:800;color:var(--accent-deep);line-height:1;font-variant-numeric:tabular-nums}
+.cd-card-days small{font-size:14px;font-weight:500;color:var(--muted);margin-left:4px}
+.cd-card-date{font-size:12px;color:var(--muted);margin-top:4px}
+.cd-detail{position:relative;border-radius:20px;overflow:hidden;min-height:480px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;border:1px solid var(--line)}
+.cd-detail-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.3}
+.cd-detail-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px}
+.cd-detail-title{font-size:22px;font-weight:700;color:var(--ink)}
+.cd-detail-days{font-size:120px;font-weight:900;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.cd-detail-days small{font-size:24px;font-weight:600;color:var(--muted)}
+.cd-detail-date{font-size:15px;color:var(--muted)}
+.cd-form{display:flex;flex-direction:column;gap:14px;max-width:480px}
+.cd-form label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+.cd-form input[type=text],.cd-form input[type=date]{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:14.5px;background:var(--card);color:var(--ink);box-sizing:border-box}
+.cd-form .row{display:flex;gap:10px}
+.cd-form .row>div{flex:1}
+.cd-img-preview{width:100%;height:160px;border-radius:12px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--paper)}
+.cd-img-preview img{width:100%;height:100%;object-fit:cover}
+.cd-img-preview span{color:var(--muted);font-size:13px}
+.cd-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.cd-empty svg{width:48px;height:48px;margin-bottom:12px;opacity:.3}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);cursor:pointer;font-size:14px;margin-bottom:12px;background:none;border:none;padding:0}
+.back-btn:hover{color:var(--accent)}
+
 /* ===== 任务页 ===== */
 .add-form{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
 .add-form input{flex:1;min-width:200px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:14.5px;background:var(--card);color:var(--ink)}
@@ -246,6 +276,10 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
       <button class="nav-btn" data-view="records">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
         记录
+      </button>
+      <button class="nav-btn" data-view="countdowns">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        倒数日
       </button>
     </nav>
     <div id="auth-area">
@@ -388,6 +422,72 @@ footer{max-width:1000px;margin:0 auto;padding:20px;border-top:1px solid var(--li
     </div>
     <div id="history-wrap"></div>
   </section>
+
+  <section class="view" id="view-countdowns">
+    <div class="section-head">
+      <div class="section-title"><span class="serif">Countdown</span> 倒数日</div>
+      <div class="section-desc">记录重要日子，图片仅保存在本机浏览器，不上传云端</div>
+    </div>
+
+    <!-- 列表模式 -->
+    <div id="cd-list-view">
+      <button class="btn sm" id="btn-cd-new" style="margin-bottom:4px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        新建倒数日
+      </button>
+      <div class="cd-grid" id="cd-grid"></div>
+      <div class="cd-empty" id="cd-empty" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <div>还没有倒数日，点上方按钮创建第一个</div>
+      </div>
+    </div>
+
+    <!-- 新建/编辑模式 -->
+    <div id="cd-edit-view" style="display:none">
+      <button class="back-btn" id="cd-back-from-edit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        返回列表
+      </button>
+      <div class="cd-form">
+        <div>
+          <label>标题</label>
+          <input type="text" id="cd-input-title" placeholder="比如：高考、生日、期末考试" maxlength="40">
+        </div>
+        <div>
+          <label>目标日期</label>
+          <input type="date" id="cd-input-date">
+        </div>
+        <div>
+          <label>背景图片（可选，仅本地保存）</label>
+          <div class="cd-img-preview" id="cd-img-preview">
+            <span>点击选择图片</span>
+          </div>
+          <input type="file" id="cd-input-img" accept="image/*" style="display:none">
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn primary" id="cd-save">保存</button>
+          <button class="btn danger" id="cd-delete" style="display:none">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详情模式 -->
+    <div id="cd-detail-view" style="display:none">
+      <button class="back-btn" id="cd-back-from-detail">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        返回列表
+      </button>
+      <div class="cd-detail" id="cd-detail-box">
+        <div class="cd-detail-bg" id="cd-detail-bg"></div>
+        <div class="cd-detail-inner">
+          <div class="cd-detail-title" id="cd-detail-title"></div>
+          <div class="cd-detail-days"><span id="cd-detail-days">0</span><small> 天</small></div>
+          <div class="cd-detail-date" id="cd-detail-date"></div>
+          <button class="btn sm ghost" id="cd-detail-edit">编辑</button>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -411,7 +511,8 @@ const DEFAULT_STATE = {
   sessions: [],
   selection: ['seed-1'],
   settings: {theme:'color', presetMin:25, mode:'down'},
-  tombstones: {tasks:[], sessions:[]}
+  tombstones: {tasks:[], sessions:[]},
+  countdowns: []
 };
 
 let state = loadState();
@@ -420,6 +521,7 @@ function loadState(){
     const raw = localStorage.getItem(LS_KEY);
     if(!raw){ return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
     const s = JSON.parse(raw);
+    if(!Array.isArray(s.countdowns)) s.countdowns = [];
     if(!Array.isArray(s.tasks) || !Array.isArray(s.sessions)) return JSON.parse(JSON.stringify(DEFAULT_STATE));
     if(!s.settings) s.settings = {theme:'color', presetMin:25, mode:'down'};
     if(!Array.isArray(s.selection)) s.selection = [];
@@ -829,6 +931,145 @@ document.getElementById('custom-min').addEventListener('keydown', e => {
   if(e.key === 'Enter'){ e.preventDefault(); e.target.blur(); }
 });
 
+/* ================= 倒数日 ================= */
+let cdEditingId = null;
+
+function daysUntil(dateStr){
+  const now = new Date(); now.setHours(0,0,0,0);
+  const target = new Date(dateStr + 'T00:00:00');
+  return Math.round((target - now) / 86400000);
+}
+
+function renderCountdowns(){
+  const grid = document.getElementById('cd-grid');
+  const empty = document.getElementById('cd-empty');
+  const list = state.countdowns || [];
+  if(list.length === 0){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(cd => {
+    const d = daysUntil(cd.date);
+    const bg = cd.image ? 'background-image:url('+cd.image+')' : '';
+    const dayLabel = d < 0 ? '已过' + Math.abs(d) : d;
+    return '<div class="cd-card" data-id="'+cd.id+'">'
+      + '<div class="cd-card-bg" style="'+bg+'"></div>'
+      + '<div class="cd-card-body">'
+      + '<div class="cd-card-title">'+esc(cd.title)+'</div>'
+      + '<div><div class="cd-card-days">'+dayLabel+'<small>'+(d<0?'天前':'天')+'</small></div>'
+      + '<div class="cd-card-date">'+cd.date+'</div></div>'
+      + '</div></div>';
+  }).join('');
+  grid.querySelectorAll('.cd-card').forEach(el => {
+    el.addEventListener('click', () => showCountdownDetail(el.dataset.id));
+  });
+}
+
+function showCountdownDetail(id){
+  const cd = (state.countdowns||[]).find(x => x.id === id);
+  if(!cd) return;
+  const d = daysUntil(cd.date);
+  document.getElementById('view-countdowns').querySelector('#cd-list-view').style.display = 'none';
+  document.getElementById('cd-edit-view').style.display = 'none';
+  document.getElementById('cd-detail-view').style.display = 'block';
+  document.getElementById('cd-detail-title').textContent = cd.title;
+  document.getElementById('cd-detail-days').textContent = Math.abs(d);
+  document.getElementById('cd-detail-date').textContent = cd.date + (d < 0 ? ' （已过）' : '');
+  const bg = document.getElementById('cd-detail-bg');
+  bg.style.backgroundImage = cd.image ? 'url('+cd.image+')' : '';
+  document.getElementById('cd-detail-edit').dataset.id = id;
+}
+
+function openCdEdit(id){
+  cdEditingId = id || null;
+  document.getElementById('cd-list-view').style.display = 'none';
+  document.getElementById('cd-detail-view').style.display = 'none';
+  document.getElementById('cd-edit-view').style.display = 'block';
+  const title = document.getElementById('cd-input-title');
+  const date = document.getElementById('cd-input-date');
+  const preview = document.getElementById('cd-img-preview');
+  const delBtn = document.getElementById('cd-delete');
+  if(id){
+    const cd = (state.countdowns||[]).find(x => x.id === id);
+    title.value = cd.title; date.value = cd.date;
+    preview.innerHTML = cd.image ? '<img src="'+cd.image+'">' : '<span>点击选择图片</span>';
+    delBtn.style.display = '';
+    delBtn.dataset.id = id;
+  } else {
+    title.value = ''; date.value = '';
+    preview.innerHTML = '<span>点击选择图片</span>';
+    delBtn.style.display = 'none';
+    cdEditingImg = null;
+  }
+}
+
+let cdEditingImg = null;
+
+function saveCountdown(){
+  const title = document.getElementById('cd-input-title').value.trim();
+  const date = document.getElementById('cd-input-date').value;
+  if(!title || !date) return;
+  if(cdEditingId){
+    const cd = (state.countdowns||[]).find(x => x.id === cdEditingId);
+    if(cd){ cd.title = title; cd.date = date; if(cdEditingImg) cd.image = cdEditingImg; }
+  } else {
+    state.countdowns.push({id:'cd-'+Date.now(), title, date, image: cdEditingImg, createdAt:Date.now()});
+  }
+  saveNow(); renderCountdowns();
+  document.getElementById('cd-edit-view').style.display = 'none';
+  document.getElementById('cd-list-view').style.display = 'block';
+}
+
+function deleteCountdown(id){
+  state.countdowns = (state.countdowns||[]).filter(x => x.id !== id);
+  saveNow(); renderCountdowns();
+  document.getElementById('cd-edit-view').style.display = 'none';
+  document.getElementById('cd-list-view').style.display = 'block';
+}
+
+document.getElementById('btn-cd-new').addEventListener('click', () => openCdEdit(null));
+document.getElementById('cd-back-from-edit').addEventListener('click', () => {
+  document.getElementById('cd-edit-view').style.display = 'none';
+  document.getElementById('cd-list-view').style.display = 'block';
+});
+document.getElementById('cd-back-from-detail').addEventListener('click', () => {
+  document.getElementById('cd-detail-view').style.display = 'none';
+  document.getElementById('cd-list-view').style.display = 'block';
+  renderCountdowns();
+});
+document.getElementById('cd-save').addEventListener('click', saveCountdown);
+document.getElementById('cd-delete').addEventListener('click', e => {
+  if(e.target.dataset.id) deleteCountdown(e.target.dataset.id);
+});
+document.getElementById('cd-detail-edit').addEventListener('click', e => {
+  openCdEdit(e.target.dataset.id);
+});
+document.getElementById('cd-img-preview').addEventListener('click', () => {
+  document.getElementById('cd-input-img').click();
+});
+document.getElementById('cd-input-img').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxW = 800;
+      const scale = Math.min(1, maxW / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      cdEditingImg = canvas.toDataURL('image/jpeg', 0.8);
+      document.getElementById('cd-img-preview').innerHTML = '<img src="'+cdEditingImg+'">';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
 /* 空格键开始/暂停 */
 document.addEventListener('keydown', e => {
   if(e.code !== 'Space') return;
@@ -1220,6 +1461,7 @@ document.querySelectorAll('#mode-seg button').forEach(x => x.classList.toggle('a
 const _pm = state.settings.presetMin || 25;
 const _presetNums = [5,15,25,45,60];
 document.querySelectorAll('.preset[data-min]').forEach(x => x.classList.toggle('active', parseInt(x.dataset.min,10) === _pm));
+renderCountdowns();
 if(!_presetNums.includes(_pm)){
   document.getElementById('btn-custom').classList.add('active');
   const _ci = document.getElementById('custom-min');
