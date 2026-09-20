@@ -1008,18 +1008,23 @@ function openCdEdit(id){
 let cdEditingImg = null;
 
 function saveCountdown(){
-  const title = document.getElementById('cd-input-title').value.trim();
-  const date = document.getElementById('cd-input-date').value;
-  if(!title || !date) return;
-  if(cdEditingId){
-    const cd = (state.countdowns||[]).find(x => x.id === cdEditingId);
-    if(cd){ cd.title = title; cd.date = date; if(cdEditingImg) cd.image = cdEditingImg; }
-  } else {
-    state.countdowns.push({id:'cd-'+Date.now(), title, date, image: cdEditingImg, createdAt:Date.now()});
+  try{
+    const title = document.getElementById('cd-input-title').value.trim();
+    const date = document.getElementById('cd-input-date').value;
+    if(!title){ alert('请填写标题'); return; }
+    if(!date){ alert('请选择日期'); return; }
+    if(cdEditingId){
+      const cd = (state.countdowns||[]).find(x => x.id === cdEditingId);
+      if(cd){ cd.title = title; cd.date = date; if(cdEditingImg) cd.image = cdEditingImg; }
+    } else {
+      state.countdowns.push({id:'cd-'+Date.now(), title, date, image: cdEditingImg || null, createdAt:Date.now()});
+    }
+    saveNow(); renderCountdowns();
+    document.getElementById('cd-edit-view').style.display = 'none';
+    document.getElementById('cd-list-view').style.display = 'block';
+  }catch(err){
+    alert('保存出错: ' + err.message);
   }
-  saveNow(); renderCountdowns();
-  document.getElementById('cd-edit-view').style.display = 'none';
-  document.getElementById('cd-list-view').style.display = 'block';
 }
 
 function deleteCountdown(id){
