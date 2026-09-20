@@ -127,6 +127,8 @@ main{max-width:1000px;margin:0 auto;padding:28px 20px 64px}
 .cd-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
 .cd-card-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35}
 .cd-card-body{position:relative;z-index:1;padding:18px;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.cd-del{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:none;background:rgba(0,0,0,.08);color:var(--muted);font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.cd-del:hover{background:#e53e3e;color:#fff}
 .cd-card-title{font-size:17px;font-weight:700;color:var(--ink)}
 .cd-card-days{font-size:36px;font-weight:800;color:var(--accent-deep);line-height:1;font-variant-numeric:tabular-nums}
 .cd-card-days small{font-size:14px;font-weight:500;color:var(--muted);margin-left:4px}
@@ -955,6 +957,7 @@ function renderCountdowns(){
     const bg = cd.image ? 'background-image:url('+cd.image+')' : '';
     const dayLabel = d < 0 ? '已过' + Math.abs(d) : d;
     return '<div class="cd-card" data-id="'+cd.id+'">'
+      + '<button class="cd-del" title="删除">&times;</button>'
       + '<div class="cd-card-bg" style="'+bg+'"></div>'
       + '<div class="cd-card-body">'
       + '<div class="cd-card-title">'+escapeHTML(cd.title)+'</div>'
@@ -963,7 +966,16 @@ function renderCountdowns(){
       + '</div></div>';
   }).join('');
   grid.querySelectorAll('.cd-card').forEach(el => {
-    el.addEventListener('click', () => showCountdownDetail(el.dataset.id));
+    el.addEventListener('click', e => {
+      if(e.target.classList.contains('cd-del')){
+        e.stopPropagation();
+        if(confirm('确定删除「'+(el.querySelector('.cd-card-title').textContent)+'」？')){
+          deleteCountdown(el.dataset.id);
+        }
+        return;
+      }
+      showCountdownDetail(el.dataset.id);
+    });
   });
 }
 
