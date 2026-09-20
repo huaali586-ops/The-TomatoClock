@@ -957,7 +957,7 @@ function renderCountdowns(){
     return '<div class="cd-card" data-id="'+cd.id+'">'
       + '<div class="cd-card-bg" style="'+bg+'"></div>'
       + '<div class="cd-card-body">'
-      + '<div class="cd-card-title">'+esc(cd.title)+'</div>'
+      + '<div class="cd-card-title">'+escapeHTML(cd.title)+'</div>'
       + '<div><div class="cd-card-days">'+dayLabel+'<small>'+(d<0?'天前':'天')+'</small></div>'
       + '<div class="cd-card-date">'+cd.date+'</div></div>'
       + '</div></div>';
